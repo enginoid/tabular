@@ -5,6 +5,9 @@
  *
  * This is very much a work in progress.  Here are some things to do:
  *
+ *   - The number of getters and setters in the tabular controller look very
+ *     much like the wrong thing to do.
+ *
  *   - The functionality for exporting probably belongs in an altogether separate
  *     module.
  *
@@ -20,6 +23,7 @@
  *
  *   - This needs testing, and probably some structural changes to better
  *     support it.
+ *
  */
 
 angular.module('angularTable', []).
