@@ -1,9 +1,28 @@
-<div class="hero-unit">
-  <h1>'Allo, 'Allo!</h1>
-  <p>You now have</p>
-  <ul>
-      <li ng-repeat="thing in awesomeThings">{{thing}}</li>
-  </ul>
-  <p>installed.</p>
-  <h3>Enjoy coding! - Yeoman</h3>
+<div tabular="employees" exportable>
+  <button download="table.csv" ng-click="export('csv', 'employees.csv')">Export as CSV</button>
+
+  <table>
+
+    <thead>
+    <tr>
+      <td column="name">Name</td>
+      <td column="email">E-mail</td>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <!--
+    It's preferable to iterate through `rows` here instead of `employees`
+    because `rows` will return the result of the expression passed into
+    the `tabular` directive which may contain filters, for instance.
+    -->
+    <tr ng-repeat="employee in rows">
+      <td>{{employee.name}}</td>
+      <td>{{employee.email}}</td>
+    </tr>
+
+    </tbody>
+
+  </table>
 </div>

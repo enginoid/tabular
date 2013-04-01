@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angularTableApp', [])
+angular.module('angularTableApp', ['angularTable'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
