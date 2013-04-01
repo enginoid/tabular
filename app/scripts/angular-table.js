@@ -24,6 +24,9 @@
  *   - This needs testing, and probably some structural changes to better
  *     support it.
  *
+ *   - Is there really no better way to download with a name, than to create a
+ *     hidden element and raise a click event on it?
+ *
  */
 
 angular.module('angularTable', []).
