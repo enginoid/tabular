@@ -184,10 +184,10 @@ angular.module('angularTable', []).
 
       }
     }
-  })
+  }).
 
   /* Allows normal click behavior on anchors. */
-  .directive('eatClick', function() {
+  directive('eatClick', function() {
     return function(scope, element, attrs) {
       element.bind('click', function(event) {
         event.preventDefault();
