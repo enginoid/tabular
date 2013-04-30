@@ -1,12 +1,20 @@
-<div tabular="employees" exportable>
+<div tabular="employees" exportable sortable="+name">
   <button download="table.csv" ng-click="export('csv', 'employees.csv')">Export as CSV</button>
 
   <table>
 
     <thead>
     <tr>
-      <td column="name">Name</td>
-      <td column="email">E-mail</td>
+      <td column="name">
+        <a href="#" eat-click
+           ng-click="sort(column)"
+           ng-class="{sorted_asc: isSortedAsc(column), sorted_desc: isSortedDesc(column)}">Name</a>
+      </td>
+      <td column="email">
+        <a href="#" eat-click
+           ng-click="sort(column)"
+           ng-class="{sorted_asc: isSortedAsc(column), sorted_desc: isSortedDesc(column)}">E-mail</a>
+      </td>
     </tr>
     </thead>
 

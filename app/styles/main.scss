@@ -1,1 +1,4 @@
 @import "compass_twitter_bootstrap";
+
+.sorted_desc:after { content: " ▼" }
+.sorted_asc:after { content: " ▲" }
