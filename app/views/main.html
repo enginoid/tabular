@@ -15,7 +15,7 @@
   <table>
     <thead>
     <tr>
-      <td ng-repeat="col in cols" ng-hide="col.hidden" column="col.id">
+      <td ng-repeat="col in cols" ng-hide="col.hidden">
         <a href="#" eat-click
            ng-click="sort(col.id)"
            ng-class="{sorted_asc: isSortedAsc(col.id), sorted_desc: isSortedDesc(col.id)}">{{col.name}}</a>

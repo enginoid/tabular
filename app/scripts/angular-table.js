@@ -37,15 +37,7 @@ angular.module('angularTable', []).
   directive('tabular', function () {
     return {
       controller: function ($scope) {
-        $scope.columns = [];
-
-        this.addColumn = function (name) {
-          $scope.columns.push(name);
-        };
-
-        this.getColumns = function () {
-          return $scope.columns;
-        };
+        $scope.columns = $scope.columns || [];
 
         this.getItems = function () {
           return $scope.rows;
@@ -54,6 +46,7 @@ angular.module('angularTable', []).
         this.setItems = function (items) {
           $scope.rows = items;
         };
+
       },
       link: function (scope, element, attrs, controller) {
         controller.watchExpression = attrs.tabular;
@@ -64,29 +57,17 @@ angular.module('angularTable', []).
     }
   }).
 
-  directive('column', function () {
-    return {
-      require: '^tabular',
-      scope: true,
-      link: function (scope, element, attrs, ctrl) {
-        var column = scope.$eval(attrs.column);
-        ctrl.addColumn(column);
-        scope.column = column;
-      }
-    }
-  }).
-
   factory('exporters', function () {
     return {
-      csv: function (columns, items) {
+      csv: function (columnIds, items) {
         var separator = ';',
           newline = '\n',
-          lines = [columns.join(separator)];
+          lines = [columnIds.join(separator)];
 
         angular.forEach(items, function (item) {
           var columnValues = [];
-          angular.forEach(columns, function (column) {
-            columnValues.push(item[column]);
+          angular.forEach(columnIds, function (columnId) {
+            columnValues.push(item[columnId]);
           });
           lines.push(columnValues.join(separator))
         });
@@ -106,7 +87,12 @@ angular.module('angularTable', []).
 
           filename = filename || 'table.'+format;
           if (exporter) {
-            var blob = exporter(ctrl.getColumns(), ctrl.getItems());
+            var columnIds = [];
+            angular.forEach(scope.columns, function(column) {
+              columnIds.push(column.id);
+            });
+
+            var blob = exporter(columnIds, ctrl.getItems());
 
             // Constructing a temporary element with an object URL seems to be
             // the only supported way to choose custom filenames.
