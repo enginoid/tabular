@@ -3,3 +3,6 @@
 .sorted_desc:after { content: " ▼" }
 .sorted_asc:after { content: " ▲" }
 .col_shown:before { content: "♦ "}
+
+#col_selector { position: absolute; right: 0; top: 0}
+#col_selector ul { list-style: none; }
