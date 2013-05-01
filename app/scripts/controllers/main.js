@@ -2,11 +2,11 @@
 
 angular.module('angularTableApp')
   .controller('MainCtrl', function ($scope) {
-    $scope.cols = [
+    $scope.columns = [
       {name: 'Name', id: 'name'},
       {name: 'E-mail', id: 'email'},
-      {name: 'Age', id: 'age', hidden: true},
-      {name: 'Salary', id: 'salary', hidden: true}
+      {name: 'Age', id: 'age'},
+      {name: 'Salary', id: 'salary'}
     ];
 
     $scope.employees = [

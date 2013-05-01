@@ -1,13 +1,13 @@
-<div tabular="employees" exportable sortable="+name">
+<div tabular="employees" exportable sortable="+name" hidden-cols="['age', 'salary']">
   <button download="table.csv" ng-click="export('csv', 'employees.csv')">Export as CSV</button>
 
   <div ng-show="showColSelector" id="col_selector">
     <h3>Select columns:</h3>
     <ul>
-      <li ng-repeat="col in cols">
+      <li ng-repeat="col in columns">
         <a href="#" eat-click
-           ng-click="col.hidden = !col.hidden"
-           ng-class="{col_shown: !col.hidden}">{{col.name}}</a>
+           ng-click="hiddenCols.toggle(col.id)"
+           ng-class="{col_shown: !hiddenCols.isHidden(col.id)}">{{col.name}}</a>
       </li>
     </ul>
   </div>
@@ -15,7 +15,7 @@
   <table>
     <thead>
     <tr>
-      <td ng-repeat="col in cols" ng-hide="col.hidden">
+      <td ng-repeat="col in columns" ng-hide="hiddenCols.isHidden(col.id)">
         <a href="#" eat-click
            ng-click="sort(col.id)"
            ng-class="{sorted_asc: isSortedAsc(col.id), sorted_desc: isSortedDesc(col.id)}">{{col.name}}</a>
@@ -35,7 +35,7 @@
     the `tabular` directive which may contain filters, for instance.
     -->
     <tr ng-repeat="employee in rows">
-      <td ng-repeat="col in cols" ng-hide="col.hidden">{{employee[col.id]}}</td>
+      <td ng-repeat="col in columns" ng-hide="hiddenCols.isHidden(col.id)">{{employee[col.id]}}</td>
     </tr>
 
     </tbody>

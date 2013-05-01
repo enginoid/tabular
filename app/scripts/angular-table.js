@@ -39,12 +39,33 @@ angular.module('angularTable', []).
       controller: function ($scope) {
         $scope.columns = $scope.columns || [];
 
+        var pluginConfig = {};
+
         this.getItems = function () {
           return $scope.rows;
         };
 
         this.setItems = function (items) {
           $scope.rows = items;
+        };
+
+        this.setPlugin = function(pluginName, config) {
+          var scopeMethods = config.scopeMethods || [];
+
+          $scope[pluginName] = {};
+          angular.forEach(scopeMethods, function (scopeMethodName) {
+            $scope[pluginName][scopeMethodName] = config[scopeMethodName];
+          });
+
+          pluginConfig[pluginName] = config;
+        };
+
+        this.getPlugin = function(pluginName) {
+          if (pluginName) {
+            return pluginConfig[pluginName];
+          } else {
+            return pluginConfig;
+          }
         };
 
       },
@@ -74,6 +95,49 @@ angular.module('angularTable', []).
 
         var content = lines.join(newline);
         return new Blob([content], {type: 'application/csv'})
+      }
+    }
+  }).
+
+  directive('hiddenCols', function () {
+    return {
+      require: 'tabular',
+      link: function (scope, element, attrs, ctrl) {
+        var HiddenColsPlugin = function(hiddenColumnIds) {
+          var hiddenColumnIdsObject = {},
+            that = {};
+
+          that.show = function (columnId) {
+            delete hiddenColumnIdsObject[columnId];
+          };
+
+          that.hide = function (columnId) {
+            hiddenColumnIdsObject[columnId] = true;
+          };
+
+          that.isHidden = function (columnId) {
+            return hiddenColumnIdsObject[columnId] || false;
+          };
+
+          that.toggle = function (columnId) {
+            if (this.isHidden(columnId)) {
+              this.show(columnId);
+            } else {
+              this.hide(columnId);
+            }
+          };
+
+          angular.forEach(hiddenColumnIds, function (column) {
+            that.hide(column);
+          });
+
+          that.scopeMethods = ['show', 'hide', 'toggle', 'isHidden'];
+
+          return that;
+        };
+
+        var hiddenColumnIds = scope.$eval(attrs.hiddenCols);
+        ctrl.setPlugin('hiddenCols', HiddenColsPlugin(hiddenColumnIds));
       }
     }
   }).
