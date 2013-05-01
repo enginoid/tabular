@@ -69,8 +69,9 @@ angular.module('angularTable', []).
       require: '^tabular',
       scope: true,
       link: function (scope, element, attrs, ctrl) {
-        ctrl.addColumn(attrs.column);
-        scope.column = attrs.column;
+        var column = scope.$eval(attrs.column);
+        ctrl.addColumn(column);
+        scope.column = column;
       }
     }
   }).
