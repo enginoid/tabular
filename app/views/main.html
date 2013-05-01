@@ -1,8 +1,8 @@
 <div tabular="employees" exportable sortable="+name">
   <button download="table.csv" ng-click="export('csv', 'employees.csv')">Export as CSV</button>
 
-  <div ng-show="showColSelector">
-    <h2>Select columns:</h2>
+  <div ng-show="showColSelector" id="col_selector">
+    <h3>Select columns:</h3>
     <ul>
       <li ng-repeat="col in cols">
         <a href="#" eat-click
@@ -15,7 +15,7 @@
   <table>
     <thead>
     <tr>
-      <td ng-repeat="col in cols" ng-hide="col.hidden" column="{{col.id}}">
+      <td ng-repeat="col in cols" ng-hide="col.hidden" column="col.id">
         <a href="#" eat-click
            ng-click="sort(col.id)"
            ng-class="{sorted_asc: isSortedAsc(col.id), sorted_desc: isSortedDesc(col.id)}">{{col.name}}</a>
