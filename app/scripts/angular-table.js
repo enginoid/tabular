@@ -120,10 +120,18 @@ angular.module('angularTable', []).
     return {
       require: 'tabular',
       link: function (scope, element, attrs, ctrl) {
+        var triggerDownload = function (blob, filename) {
+          // Constructing a temporary element with an object URL seems to be
+          // the only supported way to choose custom filenames.
+          var a = document.createElement('a');
+          a.href = window.URL.createObjectURL(blob);
+          a.download = filename;
+          a.click();
+        };
+
         scope.export = function (format, filename) {
           var exporter = exporters[format];
 
-          filename = filename || 'table.'+format;
           if (exporter) {
             var columnIds = [];
             angular.forEach(scope.columns, function(column) {
@@ -131,13 +139,8 @@ angular.module('angularTable', []).
             });
 
             var blob = exporter(columnIds, ctrl.getItems());
-
-            // Constructing a temporary element with an object URL seems to be
-            // the only supported way to choose custom filenames.
-            var a = document.createElement('a');
-            a.href = window.URL.createObjectURL(blob);
-            a.download = filename;
-            a.click();
+            filename = filename || ('table.' + format);
+            triggerDownload(blob, filename);
           } else {
             window.console && console.log("Export format not found:", format)
           }
