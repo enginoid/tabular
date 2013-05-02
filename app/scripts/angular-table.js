@@ -38,8 +38,7 @@ angular.module('angularTable', []).
     return {
       controller: function ($scope) {
         $scope.columns = $scope.columns || [];
-
-        var pluginConfig = {};
+        $scope.tabular = {};  // per-plugin config
 
         this.getItems = function () {
           return $scope.rows;
@@ -48,26 +47,6 @@ angular.module('angularTable', []).
         this.setItems = function (items) {
           $scope.rows = items;
         };
-
-        this.setPlugin = function(pluginName, config) {
-          var scopeMethods = config.scopeMethods || [];
-
-          $scope[pluginName] = {};
-          angular.forEach(scopeMethods, function (scopeMethodName) {
-            $scope[pluginName][scopeMethodName] = config[scopeMethodName];
-          });
-
-          pluginConfig[pluginName] = config;
-        };
-
-        this.getPlugin = function(pluginName) {
-          if (pluginName) {
-            return pluginConfig[pluginName];
-          } else {
-            return pluginConfig;
-          }
-        };
-
       },
       link: function (scope, element, attrs, controller) {
         controller.watchExpression = attrs.tabular;
@@ -103,41 +82,36 @@ angular.module('angularTable', []).
     return {
       require: 'tabular',
       link: function (scope, element, attrs, ctrl) {
-        var HiddenColsPlugin = function(hiddenColumnIds) {
-          var hiddenColumnIdsObject = {},
-            that = {};
+        scope.tabular.hiddenCols = {
+          idsObject: {}  // use hash structure for fast lookups
+        };
 
-          that.show = function (columnId) {
-            delete hiddenColumnIdsObject[columnId];
-          };
+        scope.hiddenCols = scope.columns || {};
 
-          that.hide = function (columnId) {
-            hiddenColumnIdsObject[columnId] = true;
-          };
+        scope.hiddenCols.show = function (columnId) {
+          delete scope.tabular.hiddenCols.idsObject[columnId];
+        };
 
-          that.isHidden = function (columnId) {
-            return hiddenColumnIdsObject[columnId] || false;
-          };
+        scope.hiddenCols.hide = function (columnId) {
+          scope.tabular.hiddenCols.idsObject[columnId] = true;
+        };
 
-          that.toggle = function (columnId) {
-            if (this.isHidden(columnId)) {
-              this.show(columnId);
-            } else {
-              this.hide(columnId);
-            }
-          };
+        scope.hiddenCols.isHidden = function (columnId) {
+          return scope.tabular.hiddenCols.idsObject[columnId] || false;
+        };
 
-          angular.forEach(hiddenColumnIds, function (column) {
-            that.hide(column);
-          });
-
-          that.scopeMethods = ['show', 'hide', 'toggle', 'isHidden'];
-
-          return that;
+        scope.hiddenCols.toggle = function (columnId) {
+          if (this.isHidden(columnId)) {
+            this.show(columnId);
+          } else {
+            this.hide(columnId);
+          }
         };
 
         var hiddenColumnIds = scope.$eval(attrs.hiddenCols);
-        ctrl.setPlugin('hiddenCols', HiddenColsPlugin(hiddenColumnIds));
+        angular.forEach(hiddenColumnIds, function (columnId) {
+          scope.hiddenCols.hide(columnId);
+        });
       }
     }
   }).
