@@ -20,13 +20,15 @@
            ng-click="state.restore(stateName)">{{stateName}}</a>
         <span>(<a href="#" eat-click ng-click="state.remove(stateName)">remove</a>)</span>
       </li>
-
-      <form ng-submit="state.save(newStateName)">
-        <label for="newStateName">New state</label>
-        <input type="text" ng-model="newStateName" id="newStateName" />
-        <button type="submit">Add</button>
-      </form>
     </ul>
+    <p ng-hide="savedStateNames.length">No table states have been saved.</p>
+
+    <h3>Add state</h3>
+    <form ng-submit="state.save(newStateName)">
+      <label for="newStateName">New state</label>
+      <input type="text" ng-model="newStateName" id="newStateName" />
+      <button type="submit">Add</button>
+    </form>
   </div>
 
   <table>
