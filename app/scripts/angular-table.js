@@ -139,6 +139,56 @@ angular.module('angularTable', []).
     }
   }).
 
+  directive('rowChecks', function ($parse) {
+    return {
+      require: 'tabular',
+      link: function (scope, element, attrs) {
+        var rowIdExpr = attrs.rowChecks,
+          getRowId = $parse(rowIdExpr);
+
+        scope.checkedRows = {};
+        scope.rowChecks = {};
+
+        scope.rowChecks.check = function (row) {
+          scope.checkedRows[getRowId(row)] = true;
+        };
+
+        scope.rowChecks.uncheck = function (row) {
+          delete scope.checkedRows[getRowId(row)];
+        };
+
+        scope.rowChecks.isChecked = function(row) {
+          return scope.checkedRows[getRowId(row)] || false;
+        };
+
+        /**
+         * Ideally we'd just do something like this in the views to keep track
+         * of the state:
+         *
+         *    <td ng-repeat="row in rows">
+         *      <input type="checkbox" ng-model="checkedRows[row]" />
+         *    </td>
+         *
+         * However, this doesn't quite work because the `ngModel` attribute
+         * seems to be initialized at compile-time.  This effectively means
+         * that each input row in this case would have `checkedRows[undefined]`
+         * as its model, and means that we can't use the model directly.
+         *
+         * @param row A row from the table (an item from `scope.rows`)
+         * @param $event A click event.
+         */
+        scope.rowChecks.setOnClick = function (row, $event) {
+          if ($event.target.checked) {
+            scope.rowChecks.check(row);
+          } else {
+            scope.rowChecks.uncheck(row);
+          }
+        };
+
+      }
+    }
+  }).
+
   directive('hiddenCols', function () {
     return {
       require: 'tabular',

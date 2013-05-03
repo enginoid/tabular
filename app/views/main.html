@@ -1,4 +1,4 @@
-<div state tabular="employees" exportable sortable="+name" hidden-cols="['age', 'salary']">
+<div state row-checks="email" tabular="employees" exportable sortable="+name" hidden-cols="['age', 'salary']">
   <button download="table.csv" ng-click="export('csv', 'employees.csv')">Export as CSV</button>
 
   <div ng-show="showColSelector" id="col_selector">
@@ -54,7 +54,13 @@
     the `tabular` directive which may contain filters, for instance.
     -->
     <tr ng-repeat="employee in rows">
-      <td ng-repeat="col in columns" ng-hide="hiddenCols.isHidden(col.id)">{{employee[col.id]}}</td>
+      <td>
+        <input type="checkbox"
+               ng-click="rowChecks.setOnClick(employee, $event)"
+               ng-checked="rowChecks.isChecked(employee)" />
+      </td>
+      <td ng-repeat="col in columns"
+          ng-hide="hiddenCols.isHidden(col.id)">{{employee[col.id]}}</td>
     </tr>
 
     </tbody>
