@@ -78,10 +78,71 @@ angular.module('angularTable', []).
     }
   }).
 
-  directive('hiddenCols', function () {
+  directive('state', function () {
     return {
       require: 'tabular',
       link: function (scope, element, attrs, ctrl) {
+        // TODO: support multiple tables
+        // TODO: support clearing localStorage when config data structures change
+        // TODO: handle potential compatibility issues when restoring after a plugin has been added (code sometimes assumes  `scope.tabular.pluginName` is an object; this would be an exception)
+
+        var PREFIX = 'tableState';
+
+        scope.savedStateNames = angular.fromJson(localStorage.getItem('savedStateNames')) || [];
+
+        scope.$watch('savedStateNames', function (newValue) {
+          localStorage.setItem('savedStateNames', angular.toJson(newValue));
+        }, true);
+
+        scope.state = scope.state || {};
+
+        var getPrefixedName = function (name) {
+          return PREFIX + '_' + name;
+        };
+
+        scope.state.isStorable = function () {
+          return Modernizr.localstorage;
+        };
+
+        scope.state.exists = function (name) {
+          var exists = false;
+          angular.forEach(scope.savedStateNames, function (savedStateName) {
+            if (savedStateName === name) {
+              exists = true;
+            }
+          });
+          return exists;
+        };
+
+        scope.state.save = function (name) {
+          localStorage.setItem(getPrefixedName(name), angular.toJson(scope.tabular));
+          if (!scope.state.exists(name)) {
+            scope.savedStateNames.push(name);
+          }
+        };
+
+        scope.state.restore = function (name) {
+          var tabularJson = localStorage.getItem(getPrefixedName(name));
+          scope.tabular = angular.fromJson(tabularJson);
+        };
+
+        scope.state.remove = function (name) {
+          localStorage.removeItem(getPrefixedName(name));
+
+          // Remove the item from the scope.savedStateNames array.
+          var index = scope.savedStateNames.indexOf(name);
+          if (index != -1) {
+            scope.savedStateNames.splice(index, 1);
+          }
+        };
+      }
+    }
+  }).
+
+  directive('hiddenCols', function () {
+    return {
+      require: 'tabular',
+      link: function (scope, element, attrs) {
         scope.tabular.hiddenCols = {
           idsObject: {}  // use hash structure for fast lookups
         };
@@ -157,7 +218,7 @@ angular.module('angularTable', []).
           DESC_PREFIX = '-',
           orderBy = $filter('orderBy');
 
-        scope.sorting = {};
+        scope.tabular.sortable = {};
 
         var splitExpression = function(expression) {
           expression = expression || '';
@@ -168,11 +229,11 @@ angular.module('angularTable', []).
         };
 
         scope.isSortedAsc = function(column) {
-          return scope.sorting.expression == DESC_PREFIX + column;
+          return scope.tabular.sortable.expression == DESC_PREFIX + column;
         };
 
         scope.isSortedDesc = function(column) {
-          return scope.sorting.expression == ASC_PREFIX + column;
+          return scope.tabular.sortable.expression == ASC_PREFIX + column;
         };
 
         scope.sortByExpression = function(expression) {
@@ -180,7 +241,7 @@ angular.module('angularTable', []).
         };
 
         scope.sort = function (column) {
-          var expressionParts = splitExpression(scope.sorting.expression),
+          var expressionParts = splitExpression(scope.tabular.sortable.expression),
             prefix = expressionParts.prefix;
 
           // To determine sort order, reverse the sort order if sorting the
@@ -193,7 +254,7 @@ angular.module('angularTable', []).
 
           var expression = prefix + column;
 
-          scope.sorting.expression = expression;
+          scope.tabular.sortable.expression = expression;
           scope.sortByExpression(expression);
         };
 
@@ -201,12 +262,12 @@ angular.module('angularTable', []).
         // expression is changed (the table source data has been changed),
         // we automatically perform sorting again.
         scope.$watch(ctrl.watchExpression, function() {
-          scope.sortByExpression(scope.sorting.expression);
+          scope.sortByExpression(scope.tabular.sortable.expression);
         });
 
         // Initially sort by the string given to the sortable directive.
         if (attrs.sortable) {
-          scope.sorting.expression = attrs.sortable;
+          scope.tabular.sortable.expression = attrs.sortable;
           scope.sortByExpression(attrs.sortable);
         }
 

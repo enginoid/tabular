@@ -1,4 +1,4 @@
-<div tabular="employees" exportable sortable="+name" hidden-cols="['age', 'salary']">
+<div state tabular="employees" exportable sortable="+name" hidden-cols="['age', 'salary']">
   <button download="table.csv" ng-click="export('csv', 'employees.csv')">Export as CSV</button>
 
   <div ng-show="showColSelector" id="col_selector">
@@ -9,6 +9,23 @@
            ng-click="hiddenCols.toggle(col.id)"
            ng-class="{col_shown: !hiddenCols.isHidden(col.id)}">{{col.name}}</a>
       </li>
+    </ul>
+  </div>
+
+  <div ng-show="state.isStorable()">
+    <h3>Restore state</h3>
+    <ul>
+      <li ng-repeat="stateName in savedStateNames">
+        <a href="#" eat-click
+           ng-click="state.restore(stateName)">{{stateName}}</a>
+        <span>(<a href="#" eat-click ng-click="state.remove(stateName)">remove</a>)</span>
+      </li>
+
+      <form ng-submit="state.save(newStateName)">
+        <label for="newStateName">New state</label>
+        <input type="text" ng-model="newStateName" id="newStateName" />
+        <button type="submit">Add</button>
+      </form>
     </ul>
   </div>
 
