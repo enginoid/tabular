@@ -75,7 +75,8 @@
                ng-checked="rowChecks.isChecked(employee)" />
       </td>
       <td ng-repeat="col in columns"
-          ng-hide="hiddenCols.isHidden(col.id)">{{employee[col.id]}}</td>
+          ng-hide="hiddenCols.isHidden(col.id)"
+          ng-bind-html="formatRow(col, employee)"></td>
     </tr>
 
     </tbody>

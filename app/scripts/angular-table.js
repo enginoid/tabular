@@ -33,12 +33,26 @@
  *
  */
 
-angular.module('angularTable', []).
-  directive('tabular', function () {
+angular.module('angularTable', ['ngSanitize']).
+  directive('tabular', function ($interpolate, $sanitize) {
     return {
       controller: function ($scope) {
         $scope.columns = $scope.columns || [];
         $scope.tabular = {};  // per-plugin config
+
+        $scope.formatRow = function (column, row) {
+          if (column.template) {
+            var context = {row: row},
+              formattedValueGetter = $interpolate(column.template);
+            return formattedValueGetter(context);
+          } else {
+            // The value is converted to a string because `ng-bind-html`
+            // refuses to display integer and boolean values.  However,
+            // we can't seem to avoid it because we need it to render
+            // every possible template, which might include HTML.
+            return row[column.id] + '';
+          }
+        };
 
         this.getItems = function () {
           return $scope.rows;

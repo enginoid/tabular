@@ -4,9 +4,9 @@ angular.module('angularTableApp')
   .controller('MainCtrl', function ($scope) {
     $scope.columns = [
       {name: 'Name', id: 'name'},
-      {name: 'E-mail', id: 'email', template: '<a href="mailto:{{value}}">{{value}}</a>'},
+      {name: 'E-mail', id: 'email', template: '<a href="mailto:{{row.email}}">{{row.email}}</a>'},
       {name: 'Age', id: 'age'},
-      {name: 'Salary', id: 'salary', template: 'value | currency'},
+      {name: 'Salary', id: 'salary', template: '{{row.salary | currency}}'},
       {name: 'Human', id: 'human'}
     ];
 
