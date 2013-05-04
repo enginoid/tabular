@@ -6,3 +6,8 @@
 
 #col_selector { position: absolute; right: 0; top: 0}
 #col_selector ul { list-style: none; }
+
+.dropdown input[type=checkbox] {
+  margin-top: 8px;
+  margin-left: 2px;
+}

@@ -139,7 +139,7 @@ angular.module('angularTable', []).
     }
   }).
 
-  directive('rowChecks', function ($parse) {
+  directive('rowChecks', function ($parse, $filter) {
     return {
       require: 'tabular',
       link: function (scope, element, attrs) {
@@ -148,6 +148,34 @@ angular.module('angularTable', []).
 
         scope.checkedRows = {};
         scope.rowChecks = {};
+
+        scope.rowChecks.checkRows = function (rows, uncheckOthers) {
+          if (uncheckOthers || uncheckOthers == undefined) {
+            scope.checkedRows = {};
+          }
+
+          angular.forEach(rows, function (row) {
+            scope.rowChecks.check(row);
+          });
+        };
+
+        scope.rowChecks.checkMatchingRows = function (expression, uncheckOthers) {
+          var rows = $filter('filter')(scope.rows, expression);
+          scope.rowChecks.checkRows(rows);
+        };
+
+        scope.rowChecks.getChecked = function () {
+          var rows = [];
+
+          // We iterate through `scope.rows` instead of `scope.checkedRows` to
+          // get the columns in order, even if it's less efficient.
+          angular.forEach(scope.rows, function (row) {
+            if (scope.rowChecks.isChecked) {
+              rows.push(row);
+            }
+          });
+          return rows;
+        };
 
         scope.rowChecks.check = function (row) {
           scope.checkedRows[getRowId(row)] = true;

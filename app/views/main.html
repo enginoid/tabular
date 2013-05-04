@@ -34,6 +34,21 @@
   <table>
     <thead>
     <tr>
+      <td>
+
+        <div class="btn-group">
+          <a class="btn dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#" eat-click ng-click="rowChecks.checkRows(rows)">All</a></li>
+            <li><a href="#" eat-click ng-click="rowChecks.checkRows([])">None</a></li>
+            <li><a href="#" eat-click ng-click="rowChecks.checkMatchingRows({human: true}, true)">Humans</a></li>
+          </ul>
+        </div>
+
+
+      </td>
       <td ng-repeat="col in columns" ng-hide="hiddenCols.isHidden(col.id)">
         <a href="#" eat-click
            ng-click="sort(col.id)"
