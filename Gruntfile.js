@@ -271,6 +271,7 @@ module.exports = function (grunt) {
     'test',
     'coffee',
     'compass:dist',
+    'less',
     'useminPrepare',
     'imagemin',
     'cssmin',
