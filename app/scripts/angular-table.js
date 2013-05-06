@@ -34,7 +34,7 @@
  */
 
 angular.module('angularTable', ['ngSanitize']).
-  directive('tabular', function ($interpolate, $sanitize) {
+  directive('tabular', function ($interpolate) {
     return {
       controller: function ($scope) {
         $scope.columns = $scope.columns || [];
@@ -42,9 +42,13 @@ angular.module('angularTable', ['ngSanitize']).
 
         $scope.formatRow = function (column, row) {
           if (column.template) {
-            var context = {row: row},
-              formattedValueGetter = $interpolate(column.template);
-            return formattedValueGetter(context);
+            if (typeof(column.template) == 'function') {
+              return column.template(row);
+            } else {
+              var context = {row: row},
+                formattedValueGetter = $interpolate(column.template);
+              return formattedValueGetter(context);
+            }
           } else {
             // The value is converted to a string because `ng-bind-html`
             // refuses to display integer and boolean values.  However,

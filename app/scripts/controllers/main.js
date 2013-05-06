@@ -7,7 +7,9 @@ angular.module('angularTableApp')
       {name: 'E-mail', id: 'email', template: '<a href="mailto:{{row.email}}">{{row.email}}</a>'},
       {name: 'Age', id: 'age'},
       {name: 'Salary', id: 'salary', template: '{{row.salary | currency}}'},
-      {name: 'Human', id: 'human'}
+      {name: 'Human', id: 'human', template: function (row) {
+        return row.human ? '<i class="icon-ok"></i>' : '<i class="icon-remove"></i>';
+      }}
     ];
 
     $scope.employees = [
