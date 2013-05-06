@@ -229,6 +229,16 @@ module.exports = function (grunt) {
           ]
         }]
       }
+    },
+    less: {
+      bootstrapCss: {
+        src: 'app/components/bootstrap/less/bootstrap.less',
+        dest: 'app/components/bootstrap/css/bootstrap.css'
+      },
+      bootstrapCssResponsive: {
+        src: 'app/components/bootstrap/less/responsive.less',
+        dest: 'app/components/bootstrap/css/bootstrap-responsive.css'
+      }
     }
   });
 
@@ -242,6 +252,7 @@ module.exports = function (grunt) {
     'compass:server',
     'livereload-start',
     'connect:livereload',
+    'less',
     'open',
     'watch'
   ]);
