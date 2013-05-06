@@ -6,7 +6,9 @@
     "json3": "~3.2.4",
     "es5-shim": "~2.0.5",
     "angular-resource": "~1.0.5",
-    "modernizr": "~2.6.2"
+    "modernizr": "~2.6.2",
+    "bootstrap": "~2.3.1",
+    "jquery": "~1.8.3"
   },
   "devDependencies": {
     "angular-mocks": "~1.0.5",
