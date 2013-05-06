@@ -58,6 +58,16 @@ angular.module('angularTable', ['ngSanitize']).
           }
         };
 
+        this.getColumnById = function (columnId) {
+          var column = null;
+          angular.forEach($scope.columns, function (currentColumn) {
+            if (currentColumn.id == columnId) {
+              column = currentColumn;
+            }
+          });
+          return column;
+        };
+
         this.getItems = function () {
           return $scope.rows;
         };
@@ -333,7 +343,23 @@ angular.module('angularTable', ['ngSanitize']).
         };
 
         scope.sortByExpression = function(expression) {
-          ctrl.setItems(orderBy(ctrl.getItems(), expression));
+          var expressionParts = splitExpression(expression),
+            columnSortPredicate = ctrl.getColumnById(expressionParts.column).sortPredicate,
+            sortedItems = [];
+
+          if (columnSortPredicate) {
+            // Clone because array sort is in-place.
+            sortedItems = ctrl.getItems().slice(0);
+
+            sortedItems.sort(columnSortPredicate);
+            if (expressionParts.prefix == DESC_PREFIX) {
+              sortedItems.reverse();
+            }
+          } else {
+            sortedItems = orderBy(ctrl.getItems(), expression);
+          }
+
+          ctrl.setItems(sortedItems);
         };
 
         scope.sort = function (column) {
