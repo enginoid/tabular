@@ -33,6 +33,19 @@
  *
  */
 
+
+var getAttributes = function (item, attributesString) {
+  var attributes = attributesString.split('.'),
+    obj = item;
+
+  angular.forEach(attributes, function (attribute) {
+    obj = obj[attribute];
+  });
+
+  return obj;
+};
+
+
 angular.module('angularTable', ['localeUtils']).
   directive('tabular', function ($interpolate) {
     return {
@@ -41,7 +54,7 @@ angular.module('angularTable', ['localeUtils']).
         $scope.columns = $scope.columns || [];
         $scope.tabular = {};  // per-plugin config
 
-        $scope.formatRow = function (column, row) {
+        $scope.formatCell = function (column, row) {
           if (column.template) {
             if (typeof(column.template) == 'function') {
               return column.template(row);
@@ -54,8 +67,7 @@ angular.module('angularTable', ['localeUtils']).
             // refuses to display integer and boolean values.  However,
             // we can't seem to avoid it because we need it to render
             // every possible template, which might include HTML.
-            var getter = $interpolate('{{' + column.id + '}}');
-            return getter(row) + '';
+            return getAttributes(row, column.id) + '';
           }
         };
 
@@ -96,7 +108,7 @@ angular.module('angularTable', ['localeUtils']).
         angular.forEach(items, function (item) {
           var columnValues = [];
           angular.forEach(columnIds, function (columnId) {
-            columnValues.push(item[columnId]);
+            columnValues.push(getAttributes(item, columnId));
           });
           lines.push(columnValues.join(separator))
         });
