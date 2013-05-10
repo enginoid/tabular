@@ -33,7 +33,7 @@
  *
  */
 
-angular.module('angularTable', ['ngSanitize', 'localeUtils']).
+angular.module('angularTable', ['localeUtils']).
   directive('tabular', function ($interpolate) {
     return {
       controller: function ($scope) {
