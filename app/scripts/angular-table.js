@@ -33,10 +33,11 @@
  *
  */
 
-angular.module('angularTable', ['ngSanitize']).
+angular.module('angularTable', ['ngSanitize', 'localeUtils']).
   directive('tabular', function ($interpolate) {
     return {
       controller: function ($scope) {
+        $scope.rows = $scope.rows || [];
         $scope.columns = $scope.columns || [];
         $scope.tabular = {};  // per-plugin config
 
