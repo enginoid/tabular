@@ -46,16 +46,16 @@ angular.module('angularTable', ['localeUtils']).
             if (typeof(column.template) == 'function') {
               return column.template(row);
             } else {
-              var context = {row: row},
-                formattedValueGetter = $interpolate(column.template);
-              return formattedValueGetter(context);
+              var formattedValueGetter = $interpolate(column.template);
+              return formattedValueGetter({row: row});
             }
           } else {
             // The value is converted to a string because `ng-bind-html`
             // refuses to display integer and boolean values.  However,
             // we can't seem to avoid it because we need it to render
             // every possible template, which might include HTML.
-            return row[column.id] + '';
+            var getter = $interpolate('{{' + column.id + '}}');
+            return getter(row) + '';
           }
         };
 
