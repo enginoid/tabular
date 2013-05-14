@@ -101,7 +101,7 @@ angular.module('angularTable', ['localeUtils']).
   factory('exporters', function () {
     return {
       csv: function (columnIds, items) {
-        var separator = ';',
+        var separator = ',',
           newline = '\n',
           lines = [columnIds.join(separator)];
 
@@ -115,6 +115,53 @@ angular.module('angularTable', ['localeUtils']).
 
         var content = lines.join(newline);
         return new Blob([content], {type: 'application/csv'})
+      },
+      xls: function (columnIds, items) {
+        // Ideally, this should be done with a proper XML parser rather than
+        // by constructing a string in this way.  However, because the XML
+        // is very simple in this case, it might suffice to actually.
+
+        var getRow = function getRow(rowValues) {
+          var xmlString = '<Row>';
+          angular.forEach(rowValues, function(value) {
+            var type = "String";  // TODO: support other types and handle null values
+            xmlString += '<Cell><Data ss:Type="' + type + '">' + value + '</Data></Cell>'
+          });
+          xmlString += '</Row>';
+          return xmlString;
+        };
+
+        var getRowValues = function getRowValues(row, columnIds) {
+          var columnValues = [];
+          angular.forEach(columnIds, function (columnId) {
+            columnValues.push(getAttributes(row, columnId));
+          });
+          return columnValues;
+        };
+
+        var getBodyRows = function getBodyRows() {
+          var xmlString = '';
+          angular.forEach(items, function (row) {
+            xmlString += getRow(getRowValues(row, columnIds));
+          });
+          return xmlString;
+        };
+
+        var xmlString = ('<?xml version="1.0" encoding="utf-8" ?>' +
+          '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"' +
+          ' xmlns:o="urn:schemas-microsoft-com:office:office"' +
+          ' xmlns:x="urn:schemas-microsoft-com:office:excel"' +
+          ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"' +
+          ' xmlns:html="http://www.w3.org/TR/REC-html40">' +
+            '<Worksheet ss:Name="Sheet1">' +
+              '<Table>' +
+                getRow(columnIds) +
+                getBodyRows() +
+              '</Table>' +
+            '</Worksheet>' +
+          '</Workbook>');
+
+        return new Blob([xmlString], {type: 'application/csv'})
       }
     }
   }).
