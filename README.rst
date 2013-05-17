@@ -39,17 +39,10 @@ to (the ones containing actual logic are):
 - ``app/views/main.html``
 
 
-Roadmap
+Features
 =======
 
-These are the next few steps:
-
-- New directive: Sorting.
-- New directive: Conditionally show/hide columns.
-- New directive: Save and list stable states. Locally, to begin with.
-- Cleanup and docs to make the thing reusable.
-- I'll probably do tests when there's substantial functionality here (at least
-  three directives) and it's clear we'll be going forward with the directive
-  within the team.
-- Figure out what all the ``yo``-generated files are doing and remove what
-  we're not going to use.
+- Interface to table rows and columns, for other extensions.
+- Sorting.
+- Show/hide columns.
+- Save and restore table states.
