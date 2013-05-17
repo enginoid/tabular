@@ -1,3 +1,9 @@
+**There are a lot of things left to do here, including better packaging,
+restructuring, and docs.  I don't recommend using this at all yet!
+However, if you can offer advice, criticism or even contributions, each
+would be most welcome!**
+
+
 About
 =====
 
